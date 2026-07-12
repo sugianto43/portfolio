@@ -8,6 +8,11 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { siteConfig } from "@/lib/data";
 
+// Vercel Analytics/Speed Insights call platform-only endpoints (/_vercel/...)
+// that don't exist when this is deployed as a static export to non-Vercel
+// hosting — see next.config.mjs's isStaticExport.
+const isStaticExport = process.env.STATIC_EXPORT === "true";
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -94,8 +99,12 @@ export default function RootLayout({
           <main id="main">{children}</main>
           <Footer />
         </ThemeProvider>
-        <Analytics />
-        <SpeedInsights />
+        {!isStaticExport && (
+          <>
+            <Analytics />
+            <SpeedInsights />
+          </>
+        )}
       </body>
     </html>
   );

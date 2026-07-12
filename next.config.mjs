@@ -1,3 +1,5 @@
+import { buildSecurityHeaders, cacheableAssetExtensions } from "./lib/security-headers.mjs";
+
 /** @type {import('next').NextConfig} */
 
 // Next's App Router streams RSC payloads via inline `<script>self.__next_f.push(...)</script>`
@@ -12,35 +14,12 @@
 const isDev = process.env.NODE_ENV === "development";
 // STATIC_EXPORT=true next build produces a plain out/ folder for static hosts
 // (e.g. Hostinger shared hosting) that can't run a Node server. Those hosts can't
-// apply the headers() below either — see public/.htaccess for the Apache equivalent.
+// apply the headers() below either — public/.htaccess carries the Apache equivalent,
+// generated from lib/security-headers.mjs by `pnpm run build:static` (see
+// scripts/generate-htaccess.mjs) so the two never drift out of sync.
 const isStaticExport = process.env.STATIC_EXPORT === "true";
-const csp = [
-  "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://va.vercel-scripts.com`,
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
-  "font-src 'self' data:",
-  `connect-src 'self' https://vitals.vercel-insights.com https://va.vercel-scripts.com${isDev ? " ws://localhost:* ws://127.0.0.1:*" : ""}`,
-  "frame-ancestors 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-].join("; ");
-
-const securityHeaders = [
-  { key: "Content-Security-Policy", value: csp },
-  { key: "X-Frame-Options", value: "DENY" },
-  { key: "X-Content-Type-Options", value: "nosniff" },
-  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  {
-    key: "Permissions-Policy",
-    value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
-  },
-  {
-    key: "Strict-Transport-Security",
-    value: "max-age=63072000; includeSubDomains; preload",
-  },
-  { key: "X-XSS-Protection", value: "1; mode=block" },
-];
+const securityHeaders = buildSecurityHeaders(isDev);
+const cacheableAssetExtensionPattern = cacheableAssetExtensions.join("|");
 
 const nextConfig = {
   reactStrictMode: true,
@@ -53,7 +32,7 @@ const nextConfig = {
     optimizePackageImports: ["lucide-react", "framer-motion"],
   },
   ...(isStaticExport
-    ? { output: "export" }
+    ? { output: "export", trailingSlash: true }
     : {
         async headers() {
           return [
@@ -71,7 +50,7 @@ const nextConfig = {
               ],
             },
             {
-              source: "/:path*.:ext(png|jpg|jpeg|svg|webp|avif|woff2|woff)",
+              source: `/:path*.:ext(${cacheableAssetExtensionPattern})`,
               headers: [
                 {
                   key: "Cache-Control",
