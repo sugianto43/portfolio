@@ -10,6 +10,10 @@
 // Refresh / sourcemaps. Production output never calls eval(), so it's omitted from the CSP
 // that actually ships.
 const isDev = process.env.NODE_ENV === "development";
+// STATIC_EXPORT=true next build produces a plain out/ folder for static hosts
+// (e.g. Hostinger shared hosting) that can't run a Node server. Those hosts can't
+// apply the headers() below either — see public/.htaccess for the Apache equivalent.
+const isStaticExport = process.env.STATIC_EXPORT === "true";
 const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://va.vercel-scripts.com`,
@@ -43,36 +47,41 @@ const nextConfig = {
   compress: true,
   images: {
     formats: ["image/avif", "image/webp"],
+    ...(isStaticExport ? { unoptimized: true } : {}),
   },
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
   },
-  async headers() {
-    return [
-      {
-        source: "/(.*)",
-        headers: securityHeaders,
-      },
-      {
-        source: "/_next/static/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
-      {
-        source: "/:path*.:ext(png|jpg|jpeg|svg|webp|avif|woff2|woff)",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
-    ];
-  },
+  ...(isStaticExport
+    ? { output: "export" }
+    : {
+        async headers() {
+          return [
+            {
+              source: "/(.*)",
+              headers: securityHeaders,
+            },
+            {
+              source: "/_next/static/:path*",
+              headers: [
+                {
+                  key: "Cache-Control",
+                  value: "public, max-age=31536000, immutable",
+                },
+              ],
+            },
+            {
+              source: "/:path*.:ext(png|jpg|jpeg|svg|webp|avif|woff2|woff)",
+              headers: [
+                {
+                  key: "Cache-Control",
+                  value: "public, max-age=31536000, immutable",
+                },
+              ],
+            },
+          ];
+        },
+      }),
 };
 
 export default nextConfig;
