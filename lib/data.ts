@@ -9,7 +9,6 @@ export const siteConfig = {
   email: "antho9922@gmail.com",
   github: "https://github.com/sugianto43",
   linkedin: "https://linkedin.com/in/sugianto43",
-  resumeUrl: "/resume.pdf",
 };
 
 export const socials: SocialLink[] = [

@@ -5,7 +5,7 @@ import { about } from "@/lib/data";
 
 export function About() {
   return (
-    <section id="about" className="py-24 sm:py-32">
+    <section id="about" className="py-16 sm:py-20">
       <div className="container">
         <FadeIn>
           <SectionHeading

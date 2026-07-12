@@ -5,7 +5,7 @@ import { siteConfig } from "@/lib/data";
 
 export function Contact() {
   return (
-    <section id="contact" className="py-24 sm:py-32">
+    <section id="contact" className="py-16 sm:py-20">
       <div className="container">
         <FadeIn>
           <div className="relative overflow-hidden rounded-2xl border border-border bg-card px-8 py-16 text-center sm:px-16">

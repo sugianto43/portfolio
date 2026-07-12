@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { navLinks } from "@/lib/data";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { MobileNav } from "@/components/layout/mobile-nav";
-import { ResumeDownloadButton } from "@/components/common/resume-download-button";
 
 export function Navbar() {
   const [scrolled, setScrolled] = React.useState(false);
@@ -48,11 +47,6 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <ResumeDownloadButton
-            label="Resume"
-            size="sm"
-            className="hidden md:inline-flex"
-          />
           <MobileNav />
         </div>
       </div>

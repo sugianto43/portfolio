@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ResumeDownloadButton } from "@/components/common/resume-download-button";
 import { SocialLinks } from "@/components/common/social-links";
 import { siteConfig } from "@/lib/data";
 
@@ -66,11 +65,7 @@ export function Hero() {
             {siteConfig.subtitle}
           </motion.p>
 
-          <motion.div variants={item} className="mt-10 flex flex-wrap gap-3">
-            <ResumeDownloadButton />
-          </motion.div>
-
-          <motion.div variants={item} className="mt-12">
+          <motion.div variants={item} className="mt-10">
             <SocialLinks />
           </motion.div>
         </motion.div>

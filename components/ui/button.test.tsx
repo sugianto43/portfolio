@@ -18,10 +18,10 @@ describe("Button", () => {
   it("renders as the child element when asChild is set", () => {
     render(
       <Button asChild>
-        <a href="/resume.pdf">Download</a>
+        <a href="/about">About</a>
       </Button>
     );
-    const link = screen.getByRole("link", { name: "Download" });
-    expect(link).toHaveAttribute("href", "/resume.pdf");
+    const link = screen.getByRole("link", { name: "About" });
+    expect(link).toHaveAttribute("href", "/about");
   });
 });

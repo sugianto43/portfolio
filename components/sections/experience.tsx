@@ -4,7 +4,7 @@ import { experiences } from "@/lib/data";
 
 export function Experience() {
   return (
-    <section id="experience" className="py-24 sm:py-32">
+    <section id="experience" className="py-16 sm:py-20">
       <div className="container">
         <FadeIn>
           <SectionHeading
